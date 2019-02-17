@@ -7,7 +7,7 @@ wp core install \
   --title="Wordpress Development site" \
   --admin_user=admin \
   --admin_password="a-secret-admin-password" \
-#  --admin_email="my.email@localhost" \
+  --admin_email="simon@develop-with-wordpress.co.uk" \
   --url=http://wordpress.localhost \
   --skip-email
 

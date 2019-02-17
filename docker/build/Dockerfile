@@ -25,5 +25,6 @@ COPY ./files/*.zip /var/www/plugins/
 
 # Copy files which have content.
 RUN mkdir /var/www/import && chown www-data:www-data /var/www/import
-COPY ./files/site-content.wordpress.xml /var/www/import
-COPY ./files/site-menu.xml /var/www/import
+# Include these files if content and menu are being imported
+#COPY ./files/site-content.wordpress.xml /var/www/import
+#COPY ./files/site-menu.xml /var/www/import
