@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  mywordpress:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    image: mywordpress:latest
+    environment:
+      VIRTUAL_HOST: "wordpress.localhost"
+      WORDPRESS_DB_HOST: "mysql"
+      WORDPRESS_DB_NAME: "wpdb"
+      WORDPRESS_DB_PASSWORD: "secret"
+      WORDPRESS_DB_USER: "root"
+      XDEBUG_CONFIG: "remote_host=192.168.68.149"
+    depends_on:
+      - "mysql"
+    networks:
+      - "webnet"
+      - "dbnet"
+    volumes:
+      - "./www:/var/www/html"
+      - "./plugin/myplugin:/var/www/html/wp-content/plugins/myplugin"
+      - "./files/install-wordpress.sh:/usr/local/bin/install-wordpress:ro"
+      - "./files/install-plugins.sh:/usr/local/bin/install-plugins:ro"
+      - "./files/import-wordpress.sh:/usr/local/bin/import-wordpress:ro"
+
+  mysql:
+    image: "mariadb:10.2"
+    user: "1000"
+    volumes:
+      - "./db:/var/lib/mysql"
+    environment:
+      MYSQL_DATABASE: "wpdb"
+      MYSQL_ROOT_PASSWORD: "secret"
+    networks:
+      - "dbnet"
+  
+  proxy:
+    image: "jwilder/nginx-proxy:alpine"
+    ports:
+      - "80:80"
+    networks:
+      webnet:
+        aliases:
+          - "wordpress.localhost"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+
+networks:
+  webnet: {}
+  dbnet: {}
